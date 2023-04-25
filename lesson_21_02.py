@@ -62,6 +62,43 @@ def reflection_wall():
     if y_circle <= WW + R_C:
         vy_circle = vy_circle * (-1)
 
+def processing_plat():
+    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, W_B, H_B, W, WW
+    
+    if plat.colliderect(circle):
+        if(y_circle >= y_plat - R_C and y_circle + R_C <= y_plat + h_plat and x_circle >= x_plat and x_circle <= x_plat + w_plat):
+            vy_circle = vy_circle * (-1)
+
+def processing_events():
+    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, loose, x_plat, running, move_right, move_left
+
+    for event in pygame.event.get():
+        # check for closing window
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            vx_circle = 5
+            vy_circle = -5
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+            move_right = True
+        if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+            move_right = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+            move_left = True
+        if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+            move_left = False
+            
+    if move_right and x_plat < W - w_plat - WW - 40:
+        x_plat += 7
+    if move_left and x_plat > WW + 40:
+        x_plat -= 7
+            
+def draw_cnt():
+    global font_cnt, data, cnt, screen
+    
+    ts_2 = font_cnt.render(data + str(cnt), True, (255, 255, 255))
+    screen.blit(ts_2, (WW + 10, WW))
+
 
 COLOR = (100, 100, 0)
 W = 1000
@@ -101,6 +138,8 @@ print(blocks)
 
 
 running = True
+move_right = False
+move_left = False
 loose = False
 cnt = 0
 
@@ -126,31 +165,17 @@ while running:
 
     reflection_wall()
 
-    if plat.colliderect(circle):
-        if(y_circle >= y_plat - R_C and y_circle + R_C <= y_plat + h_plat and x_circle >= x_plat and x_circle <= x_plat + w_plat):
-            vy_circle = vy_circle * (-1)
+    processing_plat()
             
     x_circle += vx_circle
     y_circle += vy_circle
 
-    # Ввод процесса (события)
+
+    processing_events()
         
-    for event in pygame.event.get():
-        # check for closing window
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            vx_circle = 5
-            vy_circle = -5
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-            if x_plat < W - w_plat - WW - 40:
-                x_plat += 40
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-            if x_plat > WW + 40:
-                x_plat -= 40
-        
-    ts_2 = font_cnt.render(data + str(cnt), True, (255, 255, 255))
-    screen.blit(ts_2, (WW + 10, WW))
+    draw_cnt()
+
+    
     pygame.display.flip()
 
     if (y_circle > H):

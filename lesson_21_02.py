@@ -2,12 +2,13 @@ import pygame
 import random
 
 def processing_blocks():
-    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, W_B, H_B, W, WW
+    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, W_B, H_B, W, WW, s_jump
     
     no_jump = True
 
     for i in range(len(blocks) - 1, -1, -1):
         if blocks[i].colliderect(circle):
+            s_jump.play()
             if no_jump:
                 #левый верхний угол
                 if blocks[i].x > x_circle and blocks[i].y > y_circle:
@@ -55,19 +56,22 @@ def processing_blocks():
             blocks.append(pygame.draw.rect(screen, (0, 0, 0), ((random.randint(WW, W - WW - W_B), random.randint(WW, 200), W_B, H_B)), 0))
 
 def reflection_wall():
-    global blocks, circle, no_jump, vx_circle, vy_circle
+    global blocks, circle, no_jump, vx_circle, vy_circle, s_jump
     
     if x_circle >= W - WW - R_C or x_circle <= R_C + WW:
         vx_circle = vx_circle * (-1)
+        s_jump.play()
     if y_circle <= WW + R_C:
+        s_jump.play()
         vy_circle = vy_circle * (-1)
 
 def processing_plat():
-    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, W_B, H_B, W, WW
+    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, W_B, H_B, W, WW, s_jump
     
     if plat.colliderect(circle):
-        if(y_circle >= y_plat - R_C and y_circle + R_C <= y_plat + h_plat and x_circle >= x_plat and x_circle <= x_plat + w_plat):
+        if(R_C - (y_plat - y_circle)) < abs(vy_circle):
             vy_circle = vy_circle * (-1)
+            s_jump.play()
 
 def processing_events():
     global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, loose, x_plat, running, move_right, move_left
@@ -100,7 +104,8 @@ def draw_cnt():
     screen.blit(ts_2, (WW + 10, WW))
 
 
-COLOR = (100, 100, 0)
+COLOR = (51, 253, 255)
+
 W = 1000
 H = 800
 SIZE = (W, H)
@@ -109,8 +114,17 @@ WW = 20
 R_C = 15
 
 pygame.init()
-pygame.mixer.init()
+
+
+
+s_jump = pygame.mixer.Sound('sound.wav')
+
+
 screen = pygame.display.set_mode(SIZE)
+
+bg = pygame.image.load('back.jpg').convert()
+bg = pygame.transform.scale(bg, (bg.get_width() * 0.4, bg.get_height() * 0.42))
+
 screen.fill(COLOR)
 pygame.display.set_caption("Моя игра")
 pygame.draw.rect(screen, (0, 0, 0), (0, 0, W, H + WW), WW)
@@ -120,7 +134,7 @@ y_circle = H // 2 + 300
 vx_circle = 0
 vy_circle = 0
 
-w_plat = 100
+w_plat = 30
 h_plat = 5
 x_plat = W // 2 - w_plat // 2
 y_plat = H // 2 + 300 + R_C + 1
@@ -152,6 +166,7 @@ screen.blit(ts_2, (WW + 10, WW))
 while running:
     pygame.time.wait(1000 // FPS)
     screen.fill(COLOR)
+    screen.blit(bg, (0, 0))
     for i in range(len(blocks)):
         pygame.draw.rect(screen, (0, 0, 0), blocks[i], 0)
     

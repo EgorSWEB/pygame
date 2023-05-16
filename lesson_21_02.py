@@ -72,25 +72,30 @@ def processing_plat():
         if(R_C - (y_plat - y_circle)) < abs(vy_circle):
             vy_circle = vy_circle * (-1)
             s_jump.play()
+        
 
 def processing_events():
-    global blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, loose, x_plat, running, move_right, move_left
+    global pause, blocks, circle, no_jump, vx_circle, vy_circle, cnt, x_circle, y_circle, loose, x_plat, running, move_right, move_left
 
     for event in pygame.event.get():
         # check for closing window
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            vx_circle = 5
-            vy_circle = -5
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-            move_right = True
-        if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
-            move_right = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-            move_left = True
-        if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
-            move_left = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+             pause = not pause
+        if not pause:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                vx_circle = 5
+                vy_circle = -5
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                move_right = True
+            if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+                move_right = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                move_left = True
+            if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+                move_left = False
+       
             
     if move_right and x_plat < W - w_plat - WW - 40:
         x_plat += 7
@@ -115,8 +120,6 @@ R_C = 15
 
 pygame.init()
 
-
-
 s_jump = pygame.mixer.Sound('sound.wav')
 
 
@@ -134,7 +137,7 @@ y_circle = H // 2 + 300
 vx_circle = 0
 vy_circle = 0
 
-w_plat = 30
+w_plat = 80
 h_plat = 5
 x_plat = W // 2 - w_plat // 2
 y_plat = H // 2 + 300 + R_C + 1
@@ -155,6 +158,7 @@ running = True
 move_right = False
 move_left = False
 loose = False
+pause = False
 cnt = 0
 
 pygame.font.init()
@@ -165,37 +169,36 @@ screen.blit(ts_2, (WW + 10, WW))
 
 while running:
     pygame.time.wait(1000 // FPS)
-    screen.fill(COLOR)
-    screen.blit(bg, (0, 0))
-    for i in range(len(blocks)):
-        pygame.draw.rect(screen, (0, 0, 0), blocks[i], 0)
+    if not pause:
+        screen.fill(COLOR)
+        screen.blit(bg, (0, 0))
+        for i in range(len(blocks)):
+            pygame.draw.rect(screen, (0, 0, 0), blocks[i], 0)
     
     
-    pygame.draw.rect(screen, (0, 0, 0), (0, 0, W, H + WW), WW)
-    circle = pygame.draw.circle(screen, (255, 255, 255), (x_circle, y_circle), R_C)
+        pygame.draw.rect(screen, (0, 0, 0), (0, 0, W, H + WW), WW)
+        circle = pygame.draw.circle(screen, (255, 255, 255), (x_circle, y_circle), R_C)
     
-    processing_blocks()
+        processing_blocks()
 
-    plat = pygame.draw.rect(screen, (0, 0, 0), (x_plat, y_plat, w_plat, h_plat), 0)
+        plat = pygame.draw.rect(screen, (0, 0, 0), (x_plat, y_plat, w_plat, h_plat), 0)
 
-    reflection_wall()
+        reflection_wall()
 
-    processing_plat()
+        processing_plat()
             
-    x_circle += vx_circle
-    y_circle += vy_circle
-
-
-    processing_events()
+        x_circle += vx_circle
+        y_circle += vy_circle
         
-    draw_cnt()
+        draw_cnt()
 
     
-    pygame.display.flip()
+        pygame.display.flip()
 
-    if (y_circle > H):
-        running = False
-        loose = True
+        if (y_circle > H):
+            running = False
+            loose = True
+    processing_events()
 
 running = True
 

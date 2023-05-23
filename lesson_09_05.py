@@ -1,5 +1,5 @@
 import pygame
-import random2
+import random
 
 """
 mat = [

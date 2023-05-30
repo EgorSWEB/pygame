@@ -13,7 +13,7 @@ class Cell:
     bomb = False
     close = True
     flag = False
-    numb = False
+    numb = 0
 
     def __init__(self, x, y):
         self.x = x
@@ -29,13 +29,15 @@ W = 1000
 H = 800
 SIZE = (W, H)
 FPS = 60
+SPACE = W // 4
+
 
 field = []
 for i in range(COUNT):
     row = []
     for j in range(COUNT):
-        row.append(Cell(j * (W_C + INDENT),  i * (W_C + INDENT)))
-
+        row.append(Cell(SPACE + j * (W_C + INDENT), SPACE + i * (W_C + INDENT)))
+    field.append(row)
 
 
 pygame.init()
@@ -49,6 +51,12 @@ running = True
 while running:
     pygame.time.wait(1000 // FPS)
     screen.fill(COLOR)
+
+    for i in range(COUNT):
+        for j in range(COUNT):
+            pygame.draw.rect(screen, (120, 50, 0), (field[i][j].x, field[i][j].y, W_C, W_C), 0)
+        
+    
     for event in pygame.event.get():
         # check for closing window
         if event.type == pygame.QUIT:

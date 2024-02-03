@@ -36,6 +36,45 @@ while True:
         if not found:
             print('Заметок с таким названием нет :(')
 
+    if com == 'edit':
+        name = input('Название заметки:')
+        found = False
+        file.seek(0)
+        for line in file:
+            if line.find(name + '|') == 0:
+                found = True
+                body = input('Новый текст заметки:')
+                f = open('table.txt', 'r', encoding="utf-8")
+                file_text = f.read()
+                f.close()
+                f = open('table.txt', 'w', encoding="utf-8")
+                f.write(file_text.replace(line, name + '|' + body + '|' + str(datetime.datetime.now()) + '\n'))
+                f.close()
+                print("Заметка успешно отредактирована!")
+                break
+
+        if not found:
+            print('Заметок с таким названием нет :(\nВоспользуйтесь командой "add".')
+
+    if com == 'del':
+        name = input('Название заметки:')
+        found = False
+        file.seek(0)
+        for line in file:
+            if line.find(name + '|') == 0:
+                found = True
+                f = open('table.txt', 'r', encoding="utf-8")
+                file_text = f.read()
+                f.close()
+                f = open('table.txt', 'w', encoding="utf-8")
+                f.write(file_text.replace(line, ''))
+                f.close()
+                print("Заметка успешно удалена!")
+                break
+
+        if not found:
+            print('Заметок с таким названием нет :(')
+
     if com == 'exit':
         break
 file.close()

@@ -1,0 +1,4 @@
+Hello from input!
+How are you?
+
+Привет

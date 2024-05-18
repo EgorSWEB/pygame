@@ -8,6 +8,7 @@ def add(name, body, filepath='table.txt'):
 
 def all(filepath='table.txt'):
     file = open(filepath, 'a+', encoding="utf-8")
+    file.seek(0)
     results = []
     for line in file:
         arr = line.split('|')
@@ -39,6 +40,7 @@ def find(name, filepath='table.txt'):
     
 def delete(name, filepath='table.txt'):
     file = open(filepath, 'a+', encoding="utf-8")
+    file.seek(0)
     found = False
     for line in file:
         if line.find(name + '|') == 0:

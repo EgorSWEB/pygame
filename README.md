@@ -1,2 +1,2 @@
-# pygame
-pygame dev
+# Изучение pygame
+Уроки по pygame (Техномания).
